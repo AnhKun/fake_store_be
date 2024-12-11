@@ -23,8 +23,7 @@ public class Product {
     String title;
     @Column(columnDefinition = "TEXT")
     String description;
-    @ElementCollection()
-    List<String> images;
+    String image;
     int stock;
     double price;
 

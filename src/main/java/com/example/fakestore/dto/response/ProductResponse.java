@@ -13,6 +13,6 @@ public class ProductResponse {
     double price;
     String description;
     CategoryResponse category;
-    List<String> images;
+    String image;
 
 }
