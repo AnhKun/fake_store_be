@@ -6,9 +6,9 @@ public enum ErrorCode {
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, ""),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, ""),
     UNCATEGORIZED(HttpStatus.INTERNAL_SERVER_ERROR, "Uncategorized error"),
-    UPDATE_OTHERS(HttpStatus.BAD_REQUEST, "Cannot update other's"),
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "Unauthenticated"),
     UNAUTHORIZED(HttpStatus.FORBIDDEN, "You do not have permission");
+
 
     private HttpStatus statusCode;
     private String message;

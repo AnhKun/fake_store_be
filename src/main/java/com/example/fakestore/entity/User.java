@@ -1,10 +1,7 @@
 package com.example.fakestore.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
@@ -15,6 +12,8 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +32,12 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<Order> orders;
+
+    @OneToOne(mappedBy = "user")
+    ForgotPassword forgotPassword;
+
+    @OneToOne(mappedBy = "user")
+    RefreshToken refreshToken;
 
 
 }
