@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -31,14 +32,14 @@ public class JwtTokenProvider {
 
     // generate JWT token
     public String generateToken(Authentication authentication) {
-        String username = authentication.getName();
+        String email = authentication.getName();
 
         Date currentDate = new Date();
         Date expirationDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
         String token = Jwts.builder()
                 .claim("uuid", UUID.randomUUID().toString())
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(expirationDate)
                 .signWith(key(jwtSecret))

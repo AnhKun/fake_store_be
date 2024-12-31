@@ -36,7 +36,7 @@ public class User {
     @OneToOne(mappedBy = "user")
     ForgotPassword forgotPassword;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     RefreshToken refreshToken;
 
 

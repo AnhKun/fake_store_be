@@ -1,14 +1,13 @@
-package com.example.fakestore.dto.response;
+package com.example.fakestore.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-@Getter
-@Setter
+
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryResponse {
-    Long categoryId;
+@Getter
+public class CategoryRequest {
     String name;
     String image;
 }
