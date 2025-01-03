@@ -1,5 +1,6 @@
 package com.example.fakestore.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,6 @@ import lombok.Setter;
 @Builder
 public class JwtAuthResponse {
     private String accessToken;
-    private String refreshToken;
+    private String tokenId;
     private static final String TOKEN_TYPE = "Bearer";
 }

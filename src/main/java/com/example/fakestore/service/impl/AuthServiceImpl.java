@@ -1,8 +1,8 @@
 package com.example.fakestore.service.impl;
 
 import com.example.fakestore.dto.request.LoginDto;
-import com.example.fakestore.dto.request.LogoutRequest;
-import com.example.fakestore.dto.request.RefreshTokenRequest;
+import com.example.fakestore.dto.request.TokenIdRequest;
+import com.example.fakestore.dto.request.TokenRequest;
 import com.example.fakestore.dto.request.RegisterDto;
 import com.example.fakestore.dto.response.ApiResponse;
 import com.example.fakestore.dto.response.JwtAuthResponse;
@@ -13,14 +13,16 @@ import com.example.fakestore.entity.User;
 import com.example.fakestore.exception.ApiException;
 import com.example.fakestore.exception.ErrorCode;
 import com.example.fakestore.repository.InvalidatedTokenRepository;
+import com.example.fakestore.repository.RefreshTokenRepository;
 import com.example.fakestore.repository.UserRepository;
 import com.example.fakestore.security.SecurityConfig;
-import com.example.fakestore.security.jwt.JwtRefreshToken;
 import com.example.fakestore.security.jwt.JwtTokenProvider;
 import com.example.fakestore.service.AuthService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +30,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Service
@@ -35,10 +38,14 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtRefreshToken jwtRefreshToken;
     private final InvalidatedTokenRepository invalidatedTokenRepository;
+
+    @NonFinal
+    @Value("${jwt.refreshable-duration}")
+    private long REFRESHABLE_DURATION;
 
     @Override
     public ApiResponse register(RegisterDto registerDto) {
@@ -68,44 +75,64 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String accessToken = jwtTokenProvider.generateToken(authentication);
-        String refreshToken =
-                jwtRefreshToken.generateRefreshToken(loginDto.getEmail()).getRefreshTokenString();
+        String accessToken = jwtTokenProvider.generateTokenFromEmail(authentication.getName());
+
+        // save refresh token
+        Claims claims = jwtTokenProvider.getJwtTokenClaims(accessToken);
+        String tokenId = claims.get("uuid", String.class);
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(
+                () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "User not found")
+        );
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .tokenId(tokenId)
+                .expirationTime(new Date(claims.getIssuedAt().toInstant().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
+                .user(user)
+                .build();
+
+        refreshTokenRepository.save(refreshToken);
 
         return JwtAuthResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .tokenId(tokenId)
                 .build();
     }
 
     @Override
-    public JwtAuthResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        RefreshToken refToken = jwtRefreshToken.verifyRefreshToken(refreshTokenRequest.getRefreshToken());
+    public JwtAuthResponse refreshToken(TokenIdRequest request) {
+        jwtTokenProvider.verifyRefreshToken(request.getTokenId());
 
-        User user = refToken.getUser();
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenId(request.getTokenId()).orElseThrow(
+                () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "Token not found")
+        );
 
-        String accessToken = jwtTokenProvider.generateTokenFromUser(user);
+        refreshTokenRepository.deleteByTokenId(request.getTokenId());
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(refreshToken.getTokenId())
+                .expiryTime(refreshToken.getExpirationTime())
+                .build();
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        String accessToken = jwtTokenProvider.generateTokenFromEmail(refreshToken.getUser().getEmail());
+        Claims newClaims = jwtTokenProvider.getJwtTokenClaims(accessToken);
 
         return JwtAuthResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .tokenId(newClaims.get("uuid", String.class))
                 .build();
     }
 
     @Override
-    public void logout(LogoutRequest request) {
+    public void logout(TokenRequest request) {
+        jwtTokenProvider.verifyToken(request.getToken());
+
         Claims claims = jwtTokenProvider.getJwtTokenClaims(request.getToken());
 
-        if (!(jwtTokenProvider.validateToken(request.getToken())
-                && claims.getExpiration().after(new Date()))) {
-            throw new ApiException(ErrorCode.UNAUTHENTICATED);
-        }
-
-        String uuid = claims.get("uuid", String.class);
-        Date exp = claims.getExpiration();
-
-        InvalidatedToken invalidatedToken =
-                InvalidatedToken.builder().id(uuid).expiryTime(exp).build();
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(claims.get("uuid", String.class))
+                .expiryTime(claims.getExpiration())
+                .build();
 
         invalidatedTokenRepository.save(invalidatedToken);
     }

@@ -27,7 +27,7 @@ public class SampleProductService {
         this.mapper = mapper;
     }
 
-    //@PostConstruct
+//    @PostConstruct
     public void fetchProduct() {
         log.info("start fetching...............");
         webClient.get()

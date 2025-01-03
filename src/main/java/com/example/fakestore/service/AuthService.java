@@ -1,9 +1,9 @@
 package com.example.fakestore.service;
 
 import com.example.fakestore.dto.request.LoginDto;
-import com.example.fakestore.dto.request.LogoutRequest;
-import com.example.fakestore.dto.request.RefreshTokenRequest;
 import com.example.fakestore.dto.request.RegisterDto;
+import com.example.fakestore.dto.request.TokenIdRequest;
+import com.example.fakestore.dto.request.TokenRequest;
 import com.example.fakestore.dto.response.ApiResponse;
 import com.example.fakestore.dto.response.JwtAuthResponse;
 
@@ -12,7 +12,7 @@ public interface AuthService {
 
     JwtAuthResponse login(LoginDto loginDto);
 
-    JwtAuthResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
+    JwtAuthResponse refreshToken(TokenIdRequest tokenIdRequest);
 
-    void logout(LogoutRequest request);
+    void logout(TokenRequest request);
 }

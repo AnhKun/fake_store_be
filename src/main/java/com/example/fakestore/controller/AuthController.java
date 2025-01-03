@@ -1,8 +1,8 @@
 package com.example.fakestore.controller;
 
 import com.example.fakestore.dto.request.LoginDto;
-import com.example.fakestore.dto.request.LogoutRequest;
-import com.example.fakestore.dto.request.RefreshTokenRequest;
+import com.example.fakestore.dto.request.TokenIdRequest;
+import com.example.fakestore.dto.request.TokenRequest;
 import com.example.fakestore.dto.request.RegisterDto;
 import com.example.fakestore.dto.response.ApiResponse;
 import com.example.fakestore.dto.response.JwtAuthResponse;
@@ -36,14 +36,14 @@ public class AuthController {
     }
 
     @PostMapping("/refreshToken")
-    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody @Valid RefreshTokenRequest refreshTokenRequest) {
-        JwtAuthResponse response = authService.refreshToken(refreshTokenRequest);
+    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody @Valid TokenIdRequest tokenIdRequest) {
+        JwtAuthResponse response = authService.refreshToken(tokenIdRequest);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody LogoutRequest request) {
+    public ResponseEntity<String> logout(@RequestBody TokenRequest request) {
         authService.logout(request);
         return ResponseEntity.ok().body("Logged out!");
     }

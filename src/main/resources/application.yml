@@ -25,10 +25,10 @@ spring:
             enable: true
             required: true
 
-app:
-  jwt-secret: "7db023a314668464f6ada576ebf320e13d7839d2c1c36cfb8d472f9fccf702f6"
-  jwt-expiration-mil: 86400000
-  refresh-token-expiration-mil: 10800000
+jwt:
+  secretKey: "7db023a314668464f6ada576ebf320e13d7839d2c1c36cfb8d472f9fccf702f6"
+  valid-duration: 25 # in second, = 2 days 172800
+  refreshable-duration: 259200 # in second, = 3 days
 
 
 

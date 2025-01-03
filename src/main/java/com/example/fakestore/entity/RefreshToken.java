@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
+@Table(name = "refresh_token")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer tokenId;
+    Long id;
 
-    String refreshTokenString;
+    String tokenId;
 
-    Instant expirationTime;
+    Date expirationTime;
 
     @OneToOne
     User user;
