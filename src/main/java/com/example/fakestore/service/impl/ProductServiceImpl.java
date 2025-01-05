@@ -69,8 +69,6 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = productData.getContent();
         List<ProductResponse> content = Converter.toList(productList, ProductResponse.class);
 
-        UserDetailsImpl userDetails = JwtSecurityUtil.getJwtUserInfo().orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
-
         return PageResponse.<ProductResponse>builder()
                 .content(content)
                 .pageNo(productData.getNumber())
