@@ -25,7 +25,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter authenticationFilter;
 
     private static final String[] PUBLIC_ENDPOINT = {
-            "/api/v1/auth/**", "api/v1/file/upload", "/api/v1/forgotPassword/**", "/api/v1/products/**"
+            "/api/v1/auth/**", "api/v1/file/upload", "/api/v1/forgotPassword/**", "/api/v1/products/**", "/api/v1/categories/**"
     };
 
     @Bean
