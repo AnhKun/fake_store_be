@@ -5,6 +5,7 @@ import com.example.fakestore.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -24,8 +25,12 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAuthenticationFilter authenticationFilter;
 
-    private static final String[] PUBLIC_ENDPOINT = {
-            "/api/v1/auth/**", "api/v1/file/upload", "/api/v1/forgotPassword/**", "/api/v1/products/**", "/api/v1/categories/**"
+    private static final String[] AUTHEN_ENDPOINT = {
+            "/api/v1/auth/**", "api/v1/file/upload", "/api/v1/forgotPassword/**"
+    };
+
+    private static final String[] ITEM_ENDPOINT = {
+            "/api/v1/products/**", "/api/v1/categories/**"
     };
 
     @Bean
@@ -43,7 +48,9 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(PUBLIC_ENDPOINT)
+                        .requestMatchers(AUTHEN_ENDPOINT)
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, ITEM_ENDPOINT)
                         .permitAll()
                         .anyRequest()
                         .authenticated())
