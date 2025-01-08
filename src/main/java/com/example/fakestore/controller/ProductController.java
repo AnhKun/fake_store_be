@@ -8,6 +8,7 @@ import com.example.fakestore.util.AppConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     private final ProductService productService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/products")
     public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest) {
         ProductResponse response = productService.addProduct(productRequest);
@@ -41,6 +43,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/products/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long productId,
@@ -51,6 +54,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
         String statement = productService.deleteProduct(productId);

@@ -1,9 +1,9 @@
 package com.example.fakestore.service.impl;
 
 import com.example.fakestore.dto.request.LoginDto;
+import com.example.fakestore.dto.request.RegisterDto;
 import com.example.fakestore.dto.request.TokenIdRequest;
 import com.example.fakestore.dto.request.TokenRequest;
-import com.example.fakestore.dto.request.RegisterDto;
 import com.example.fakestore.dto.response.ApiResponse;
 import com.example.fakestore.dto.response.JwtAuthResponse;
 import com.example.fakestore.entity.InvalidatedToken;
@@ -72,17 +72,30 @@ public class AuthServiceImpl implements AuthService {
     public JwtAuthResponse login(LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(
+                () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "User not found")
+        );
+
+        var existingRefreshToken = refreshTokenRepository.findByUser(user);
+        if (existingRefreshToken.isPresent()) {
+            InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                    .id(existingRefreshToken.get().getTokenId())
+                    .expiryTime(existingRefreshToken.get().getExpirationTime())
+                    .build();
+
+            invalidatedTokenRepository.save(invalidatedToken);
+            refreshTokenRepository.deleteByTokenId(existingRefreshToken.get().getTokenId());
+        }
+
 
         String accessToken = jwtTokenProvider.generateTokenFromEmail(authentication.getName());
 
         // save refresh token
         Claims claims = jwtTokenProvider.getJwtTokenClaims(accessToken);
         String tokenId = claims.get("uuid", String.class);
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(
-                () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "User not found")
-        );
+
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .tokenId(tokenId)

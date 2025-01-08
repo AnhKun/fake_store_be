@@ -1,6 +1,7 @@
 package com.example.fakestore.repository;
 
 import com.example.fakestore.entity.RefreshToken;
+import com.example.fakestore.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,4 +19,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Stri
     @Modifying
     @Transactional
     void deleteByTokenId(String tokenId);
+
+    @Query("SELECT r FROM RefreshToken r WHERE r.user = :user")
+    Optional<RefreshToken> findByUser(User user);
 }

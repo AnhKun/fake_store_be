@@ -8,6 +8,7 @@ import com.example.fakestore.util.AppConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/categories")
     public ResponseEntity<CategoryResponse> addCategory(@RequestBody CategoryRequest categoryRequest) {
         CategoryResponse response = categoryService.addCategory(categoryRequest);
@@ -42,6 +44,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/categories/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
         String statement = categoryService.deleteCategory(categoryId);

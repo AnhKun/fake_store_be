@@ -27,7 +27,7 @@ spring:
 
 jwt:
   secretKey: "7db023a314668464f6ada576ebf320e13d7839d2c1c36cfb8d472f9fccf702f6"
-  valid-duration: 25 # in second, = 2 days 172800
+  valid-duration: 172800 # in second, = 2 days
   refreshable-duration: 259200 # in second, = 3 days
 
 

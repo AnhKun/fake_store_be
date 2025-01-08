@@ -84,8 +84,15 @@ public class ProductServiceImpl implements ProductService {
         Product existingProduct = productRepository.findByProductId(productId)
                 .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "product not found"));
 
+        Category updatedCategory = categoryRepository.findByName(productRequest.getCategory().getName())
+                .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "category not found"));
+
+        existingProduct.setTitle(productRequest.getTitle());
         existingProduct.setPrice(productRequest.getPrice());
         existingProduct.setStock(productRequest.getStock());
+        existingProduct.setImage(productRequest.getImage());
+        existingProduct.setDescription(productRequest.getDescription());
+        existingProduct.setCategory(updatedCategory);
 
         Product updatedProduct = productRepository.save(existingProduct);
 

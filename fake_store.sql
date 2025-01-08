@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Jan 07, 2025 at 06:41 AM
+-- Generation Time: Jan 08, 2025 at 11:31 AM
 -- Server version: 8.0.37
 -- PHP Version: 8.2.20
 
@@ -68,6 +68,11 @@ CREATE TABLE `invalidated_tokens` (
   `id` varchar(255) NOT NULL,
   `expiry_time` datetime(6) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `invalidated_tokens`
+--
+
 
 
 -- --------------------------------------------------------
@@ -153,7 +158,7 @@ INSERT INTO `products` (`product_id`, `description`, `image`, `price`, `stock`, 
 (18, '95% RAYON 5% SPANDEX, Made in USA or Imported, Do Not Bleach, Lightweight fabric with great stretch for comfort, Ribbed on sleeves and neckline / Double stitching on bottom hem', 'https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_.jpg', 9.85, 0, 'MBJ Women\'s Solid Short Sleeve Boat Neck V ', NULL),
 (19, '100% Polyester, Machine wash, 100% cationic polyester interlock, Machine Wash & Pre Shrunk for a Great Fit, Lightweight, roomy and highly breathable with moisture wicking fabric which helps to keep moisture away, Soft Lightweight Fabric with comfortable V-neck collar and a slimmer fit, delivers a sleek, more feminine silhouette and Added Comfort', 'https://fakestoreapi.com/img/51eg55uWmdL._AC_UX679_.jpg', 7.95, 0, 'Opna Women\'s Short Sleeve Moisture', NULL),
 (20, '95%Cotton,5%Spandex, Features: Casual, Short Sleeve, Letter Print,V-Neck,Fashion Tees, The fabric is soft and has some stretch., Occasion: Casual/Office/Beach/School/Home/Street. Season: Spring,Summer,Autumn,Winter.', 'https://fakestoreapi.com/img/61pHAEJ4NML._AC_UX679_.jpg', 12.99, 0, 'DANVOUY Womens T Shirt Casual Cotton Short', NULL),
-(21, 'this is a test case', '', 0, 150, 'testing product', 1);
+(24, 'this is another test case', '', 120, 1500, 'testing product', 1);
 
 -- --------------------------------------------------------
 
@@ -167,6 +172,11 @@ CREATE TABLE `refresh_token` (
   `token_id` varchar(255) DEFAULT NULL,
   `user_user_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `refresh_token`
+--
+
 
 -- --------------------------------------------------------
 
@@ -191,7 +201,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `active`, `avatar`, `email`, `first_name`, `last_name`, `password`, `role`) VALUES
 (1, NULL, NULL, 'hoanganh123nha@gmail.com', NULL, NULL, '$2a$10$DnBsU.Ox.pQKUO5lE9YMLuCrPTssnWiTLqWcp05yZj0am3xm9IVMy', 'ROLE_CUSTOMER'),
-(2, NULL, NULL, 'admin@gmail.com', NULL, NULL, '$2a$10$DnBsU.Ox.pQKUO5lE9YMLuCrPTssnWiTLqWcp05yZj0am3xm9IVMy', 'ROLE_ADMIN');
+(2, NULL, NULL, 'admin@gmail.com', NULL, NULL, '$2a$10$J61OFh7UARKa5MppGAb9guA5jIeYfgMDKNQGz6LrELjxtHFDNlNGG', 'ROLE_ADMIN');
 
 --
 -- Indexes for dumped tables
@@ -296,19 +306,19 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `product_id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `refresh_token`
 --
 ALTER TABLE `refresh_token`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
