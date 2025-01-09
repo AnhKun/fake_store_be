@@ -9,7 +9,7 @@ public class ApiException extends RuntimeException {
     private final String message;
 
     public ApiException(ErrorCode errorCode, String... obj) {
-        this.message = String.format("%s", Arrays.stream(obj).findFirst().orElse(errorCode.getMessage()));
+        this.message = Arrays.stream(obj).findFirst().orElse(errorCode.getMessage());
         this.errorCode = errorCode;
     }
 

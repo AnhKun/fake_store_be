@@ -1,18 +1,15 @@
-package com.example.fakestore.dto.response;
+package com.example.fakestore.dto.request;
 
 import com.example.fakestore.entity.Role;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+
 @Getter
-@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
-    Long userId;
+public class UserRequest {
     String email;
     String firstName;
     String lastName;
     String avatar;
-    Role role;
 }

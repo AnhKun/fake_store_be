@@ -55,6 +55,8 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User newUser = User.builder()
+                .firstName(registerDto.getFirstName())
+                .lastName(registerDto.getLastName())
                 .email(registerDto.getEmail())
                 .password(SecurityConfig.passwordEncoder().encode(registerDto.getPassword()))
                 .role(Role.ROLE_CUSTOMER)

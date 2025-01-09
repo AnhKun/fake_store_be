@@ -24,8 +24,9 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     @Override
     public CategoryResponse addCategory(CategoryRequest categoryRequest) {
-        categoryRepository.findByName(categoryRequest.getName())
-                .orElseThrow(() -> new ApiException(ErrorCode.BAD_REQUEST, "category already exists"));
+        var existingCategory = categoryRepository.findByName(categoryRequest.getName());
+        if (existingCategory.isPresent())
+            throw new ApiException(ErrorCode.BAD_REQUEST, "category already exists");
 
         Category category = Category.builder()
                 .name(categoryRequest.getName())
@@ -40,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse getCategory(Long categoryId) {
         Category existingCategory = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(() -> new ApiException(ErrorCode.BAD_REQUEST, "category already exists"));
+                .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "category not found"));
 
         return Converter.toModel(existingCategory, CategoryResponse.class);
     }
@@ -51,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
         Page<Category> categoryData = categoryRepository.findAll(pageable);
 
@@ -71,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public String deleteCategory(Long categoryId) {
         Category existingCategory = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(() -> new ApiException(ErrorCode.BAD_REQUEST, "category already exists"));
+                .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "category not found"));
 
         categoryRepository.delete(existingCategory);
 

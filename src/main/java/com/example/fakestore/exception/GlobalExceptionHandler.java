@@ -14,26 +14,23 @@ import java.util.Optional;
 public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiResponse<Object>> handleApiException(ApiException ex) {
-        ErrorCode errorCode = ex.getErrorCode();
 
         ApiResponse<Object> response = ApiResponse.builder()
-                .code(errorCode.getStatusCode())
-                .message(errorCode.getMessage())
+                .code(ex.getErrorCode().getStatusCode())
+                .message(ex.getMessage())
                 .build();
 
-        return ResponseEntity.status(errorCode.getStatusCode()).body(response);
+        return ResponseEntity.status(ex.getErrorCode().getStatusCode()).body(response);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Object>> handleAccessDeniedException(AccessDeniedException ex) {
-        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
-
         ApiResponse<Object> response = ApiResponse.builder()
-                .code(errorCode.getStatusCode())
-                .message(errorCode.getMessage())
+                .code(ErrorCode.UNAUTHORIZED.getStatusCode())
+                .message(ex.getMessage())
                 .build();
 
-        return ResponseEntity.status(errorCode.getStatusCode()).body(response);
+        return ResponseEntity.status(ErrorCode.UNAUTHORIZED.getStatusCode()).body(response);
     }
 
     @ExceptionHandler(Exception.class)

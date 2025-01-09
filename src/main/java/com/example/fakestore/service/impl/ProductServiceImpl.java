@@ -62,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
         Page<Product> productData = productRepository.findAll(pageable);
 
