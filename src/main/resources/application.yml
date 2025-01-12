@@ -1,7 +1,7 @@
 spring:
   datasource:
     username: root
-    password: root
+    password: Trhien@@1!
     url: jdbc:mysql://localhost:3306/fake_store
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
