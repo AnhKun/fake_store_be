@@ -12,7 +12,7 @@ public interface ProductService {
 
     ProductResponse getProduct(Long productId);
 
-    PageResponse<ProductResponse> getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir);
+    PageResponse<ProductResponse> getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir, String partialName, String categoryName);
 
     ProductResponse updateProduct(Long productId, ProductRequest productRequest);
 

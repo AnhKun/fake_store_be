@@ -38,8 +38,10 @@ public class ProductController {
             @RequestParam(name = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(name = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
             @RequestParam(name = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
-        PageResponse<ProductResponse> response = productService.getAllProducts(pageNo, pageSize, sortBy, sortDir);
+            @RequestParam(name = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
+            @RequestParam(name = "partialName", defaultValue = "", required = false) String partialName,
+            @RequestParam(name = "categoryName", defaultValue = "", required = false) String categoryName) {
+        PageResponse<ProductResponse> response = productService.getAllProducts(pageNo, pageSize, sortBy, sortDir, partialName, categoryName);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

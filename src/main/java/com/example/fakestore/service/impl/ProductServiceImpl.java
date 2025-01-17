@@ -10,9 +10,7 @@ import com.example.fakestore.exception.ApiException;
 import com.example.fakestore.exception.ErrorCode;
 import com.example.fakestore.repository.CategoryRepository;
 import com.example.fakestore.repository.ProductRepository;
-import com.example.fakestore.security.service.UserDetailsImpl;
 import com.example.fakestore.service.ProductService;
-import com.example.fakestore.util.JwtSecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -57,21 +55,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageResponse<ProductResponse> getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public PageResponse<ProductResponse> getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir, String partialName, String categoryName) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
-        Page<Product> productData = productRepository.findAll(pageable);
+        if (partialName == null || partialName.trim().isEmpty()) {
+            partialName = null;
+        }
+
+        if (categoryName == null || categoryName.trim().isEmpty()) {
+            categoryName = null;
+        }
+
+        Page<Product> productData = productRepository.findProducts(pageable, partialName, categoryName);
 
         List<Product> productList = productData.getContent();
         List<ProductResponse> content = Converter.toList(productList, ProductResponse.class);
 
         return PageResponse.<ProductResponse>builder()
                 .content(content)
-                .pageNo(productData.getNumber())
+                .pageNo(pageNo)
                 .pageSize(productData.getSize())
                 .totalElements(productData.getTotalElements())
                 .totalPages(productData.getTotalPages())

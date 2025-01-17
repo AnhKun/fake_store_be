@@ -16,4 +16,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p")
     Page<Product> findAll(Pageable pageable);
+
+    @Query("SELECT p FROM Product p " +
+            "WHERE (:partialName IS NULL OR LOCATE(:partialName, p.title) <> 0)" +
+            "AND (:categoryName IS NULL OR p.category.name = :categoryName)")
+    Page<Product> findProducts(Pageable pageable, String partialName, String categoryName);
 }
